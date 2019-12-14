@@ -1,0 +1,1 @@
+Implement a simple blog api as part of The Odin Projects curriculum (https://www.theodinproject.com/courses/nodejs/lessons/blog-api).

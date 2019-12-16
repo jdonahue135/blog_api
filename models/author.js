@@ -10,4 +10,4 @@ var AuthorSchema = new Schema(
 );
 
 //Export model
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('Author', AuthorSchema);

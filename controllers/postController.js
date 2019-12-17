@@ -1,4 +1,8 @@
 const Post = require('../models/post');
+const Comment = require('../models/comment');
+
+const { body } = require('express-validator/check');
+const { sanitizeBody } = require('express-validator/filter');
 
 // Display all posts on GET
 exports.posts = (req, res, next) => {
@@ -9,9 +13,32 @@ exports.posts = (req, res, next) => {
 }
 
 // Display individual post page
-exports.post_get = (req, res) => {
+exports.post_get = (req, res, next) => {
     Post.findById(req.params.id, function (err, post) {
         if (err) return next(err);
         res.json(post);
+    });
+}
+
+// Handle comment on POST
+exports.comment = (req, res, next) => {
+    
+    // Validate fields.
+    body('author').trim().isLength({ min: 1 }).withMessage('Author must be specified.')
+        .isAlphanumeric().withMessage('Author has non-alphanumeric characters.'),
+    body('text').trim().isLength({ min: 1 }).withMessage('Comment must be specified.')
+
+    // Sanitize fields.
+    sanitizeBody('author').escape(),
+    sanitizeBody('text').escape()
+
+    //save comment
+    const comment = new Comment({
+        author: req.body.author,
+        text: req.body.text,
+        post: req.parasms.postid
+    }).save(err => {
+        if (err) return next(err);
+        res.json(comment);
     });
 }

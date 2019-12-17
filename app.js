@@ -3,25 +3,12 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var dotenv = require('dotenv')
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 var postsRouter = require('./routes/posts')
 var adminRouter = require('./routes/admin')
 
 var app = express();
-
-//Configure dotenv
-dotenv.config();
-
-//Set up mongoose connection
-var mongoose = require('mongoose');
-var dev_db_url = process.env.DB_URL;
-var mongoDB = process.env.MONGODB_URI || dev_db_url;
-mongoose.connect(mongoDB, { useNewUrlParser: true });
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error: '));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -34,9 +21,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/posts', postsRouter);
-app.use('/admin', adminRouter);
+app.use('/api/posts', postsRouter);
+app.use('/api/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

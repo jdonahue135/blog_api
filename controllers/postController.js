@@ -38,6 +38,12 @@ exports.comment = (req, res, next) => {
     sanitizeBody('author').escape(),
     sanitizeBody('text').escape()
 
+    //Check if post in a draft
+    if (req.params.postid.published_status == false) {
+        res.json({message: 'Post does not exist, no comment created'});
+        next();
+    }
+
     //save comment
     const comment = new Comment({
         author: req.body.author,
@@ -51,7 +57,7 @@ exports.comment = (req, res, next) => {
 
 // Display all comments of a post on GET
 exports.comments_get = (req, res, next) => {
-    Comment.find({'post.id': req.params.postid}, function (err, comments) {
+    Comment.find({'post': req.params.postid}, function (err, comments) {
         if (err) return next(err);
         res.json(comments);
     });
@@ -59,5 +65,8 @@ exports.comments_get = (req, res, next) => {
 
 // Display specific comment of a post on GET
 exports.comment_get = (req, res, next) => {
-    res.send("Not implemented");
+    Comment.findById(req.params.commentid, function (err, comment) {
+        if (err) return next(err);
+        res.json(comment);
+    })
 }

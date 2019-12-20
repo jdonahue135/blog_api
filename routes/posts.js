@@ -13,4 +13,10 @@ router.get('/:postid', post_controller.post_get);
 /* POST comment to individual post page. */
 router.post('/:postid', post_controller.comment);
 
+/* GET comments on individual post. */
+router.get('/:postid/comments', post_controller.comments_get);
+
+/* GET specific comment on individual post. */
+router.get('/:postid/comments/:commentid', post_controller.comment_get);
+
 module.exports = router;

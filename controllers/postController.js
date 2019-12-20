@@ -42,3 +42,13 @@ exports.comment = (req, res, next) => {
         res.json(comment);
     });
 }
+
+// Display all comments of a post on GET
+exports.comments_get = (req, res, next) => {
+    res.send("Not implemented");
+}
+
+// Display specific comment of a post on GET
+exports.comment_get = (req, res, next) => {
+    res.send("Not implemented");
+}

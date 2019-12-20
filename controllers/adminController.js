@@ -66,13 +66,13 @@ exports.post_post = (req, res, next) => {
     sanitizeBody('text').escape()
 
     // Save post
-    const post = new Post({
+    const new_post = new Post({
         title: req.body.title,
         author: req.body.author,
         text: req.body.text,
         published_status: req.body.published_status
     }).save(err => {
         if (err) return next(err);
-        res.json(post);
+        res.json({message: 'new post created'});
     });
 }

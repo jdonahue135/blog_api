@@ -18,6 +18,7 @@ exports.post_get = (req, res, next) => {
         if (err) return next(err);
         if (post.published_status == false || !post) {
             res.json({message: "Post does not exist"});
+            next();
         }
         else {
             res.json(post);
@@ -41,10 +42,10 @@ exports.comment = (req, res, next) => {
     const comment = new Comment({
         author: req.body.author,
         text: req.body.text,
-        post: req.parasms.postid
+        post: req.params.postid
     }).save(err => {
         if (err) return next(err);
-        res.json(comment);
+        res.json({message: 'Comment created'});
     });
 }
 

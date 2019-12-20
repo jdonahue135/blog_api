@@ -14,7 +14,7 @@ exports.posts = (req, res, next) => {
 
 // Display individual post page
 exports.post_get = (req, res, next) => {
-    Post.findById(req.params.id, function (err, post) {
+    Post.findById(req.params.postid, function (err, post) {
         if (err) return next(err);
         res.json(post);
     });
@@ -45,7 +45,10 @@ exports.comment = (req, res, next) => {
 
 // Display all comments of a post on GET
 exports.comments_get = (req, res, next) => {
-    res.send("Not implemented");
+    Comment.find({'post.id': req.params.postid}, function (err, comments) {
+        if (err) return next(err);
+        res.json(comments);
+    });
 }
 
 // Display specific comment of a post on GET

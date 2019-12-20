@@ -56,7 +56,7 @@ exports.drafts = (req, res) => {
 }
 
 //Handle blog post submit on post
-exports.post_post = (req, res) => {
+exports.post_post = (req, res, next) => {
     // Validate fields.
     body('title').trim().isLength({ min: 1 }).withMessage('Title must be specified.'),
     body('text').trim().isLength({ min: 1 }).withMessage('Text must be specified.')
@@ -68,10 +68,9 @@ exports.post_post = (req, res) => {
     // Save post
     const post = new Post({
         title: req.body.title,
-        author: 'test_author',
-        timestamp: Date.now,
+        author: req.body.author,
         text: req.body.text,
-        published_status: true
+        published_status: req.body.published_status
     }).save(err => {
         if (err) return next(err);
         res.json(post);

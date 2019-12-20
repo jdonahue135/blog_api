@@ -16,7 +16,12 @@ exports.posts = (req, res, next) => {
 exports.post_get = (req, res, next) => {
     Post.findById(req.params.postid, function (err, post) {
         if (err) return next(err);
-        res.json(post);
+        if (post.published_status == false || !post) {
+            res.json({message: "Post does not exist"});
+        }
+        else {
+            res.json(post);
+        }
     });
 }
 

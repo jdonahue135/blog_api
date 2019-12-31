@@ -52,11 +52,15 @@ exports.signup = (req, res, next) => {
 
 //Display unposted drafts on GET
 exports.drafts = (req, res) => {
-    res.send("Not implemented: list of drafts");
+    Post.find({'published_status': false}, function (err, posts) {
+        if (err) return next(err);
+        res.json(posts);
+    });
 }
 
-//Handle blog post submit on post
+//Handle blog post submit on POST
 exports.post_post = (req, res, next) => {
+
     // Validate fields.
     body('title').trim().isLength({ min: 1 }).withMessage('Title must be specified.'),
     body('text').trim().isLength({ min: 1 }).withMessage('Text must be specified.')

@@ -68,5 +68,16 @@ exports.comment_get = (req, res, next) => {
     Comment.findById(req.params.commentid, function (err, comment) {
         if (err) return next(err);
         res.json(comment);
-    })
+    });
+}
+
+exports.post_delete = (req, res, next) => {
+    Post.findByIdAndRemove(req.params.postid, function (err, post) {
+        if (err) return next(err);
+        res.json(post);
+    });
+}
+
+exports.comment_delete = (req, res, next) => {
+    res.send('Not implemented');
 }

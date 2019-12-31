@@ -19,4 +19,10 @@ router.get('/:postid/comments', post_controller.comments_get);
 /* GET specific comment on individual post. */
 router.get('/:postid/comments/:commentid', post_controller.comment_get);
 
+/* handle blog post DELETE */
+router.delete('/:postid', post_controller.post_delete);
+
+/* handle comment DELETE */
+router.delete('/:postid/comments/:commentid', post_controller.comment_delete);
+
 module.exports = router;

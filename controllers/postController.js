@@ -79,5 +79,8 @@ exports.post_delete = (req, res, next) => {
 }
 
 exports.comment_delete = (req, res, next) => {
-    res.send('Not implemented');
+    Comment.findByIdAndRemove(req.params.commentid, function (err, comment) {
+        if (err) return next(err);
+        res.json(comment);
+    });
 }

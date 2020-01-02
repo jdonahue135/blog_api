@@ -1,6 +1,8 @@
 const Post = require('../models/post');
 const Comment = require('../models/comment');
 
+var async = require('async');
+
 const { body } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 
@@ -16,7 +18,7 @@ exports.posts = (req, res, next) => {
 exports.post_get = (req, res, next) => {
     Post.findById(req.params.postid, function (err, post) {
         if (err) return next(err);
-        if (post.published_status == false || !post) {
+        if (!post || post.published_status == false) {
             res.json({message: "Post does not exist"});
             next();
         }
@@ -72,6 +74,17 @@ exports.comment_get = (req, res, next) => {
 }
 
 exports.post_delete = (req, res, next) => {
+    Comment.find({ 'post': req.params.postid }, function (err, post_comments) {
+        console.log('comments: ' + post_comments);
+        if (err) return next(err);
+        for (comment in post_comments) {
+            Comment.findByIdAndRemove(comment._id, function (err, the_comment) {
+                if (err) return next(err);
+                // THIS KEEPS RETURNING the_comment as NULL
+                console.log(the_comment);
+            })
+        }
+    });
     Post.findByIdAndRemove(req.params.postid, function (err, post) {
         if (err) return next(err);
         res.json(post);

@@ -78,9 +78,8 @@ exports.post_delete = (req, res, next) => {
         console.log('comments: ' + post_comments);
         if (err) return next(err);
         for (comment in post_comments) {
-            Comment.findByIdAndRemove(comment._id, function (err, the_comment) {
+            Comment.findByIdAndRemove(post_comments[comment]._id, function (err, the_comment) {
                 if (err) return next(err);
-                // THIS KEEPS RETURNING the_comment as NULL
                 console.log(the_comment);
             })
         }

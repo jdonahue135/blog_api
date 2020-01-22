@@ -73,6 +73,7 @@ exports.comment_get = (req, res, next) => {
     });
 }
 
+// Handle post DELETE
 exports.post_delete = (req, res, next) => {
     Comment.find({ 'post': req.params.postid }, function (err, post_comments) {
         console.log('comments: ' + post_comments);
@@ -90,9 +91,45 @@ exports.post_delete = (req, res, next) => {
     });
 }
 
+// Handle comment DELETE
 exports.comment_delete = (req, res, next) => {
     Comment.findByIdAndRemove(req.params.commentid, function (err, comment) {
         if (err) return next(err);
         res.json(comment);
     });
+}
+
+//Handle post update on PUT
+exports.post_update = (req, res, next) => {
+    
+    // Validate fields.
+    body('title').trim().isLength({ min: 1 }).withMessage('Title must be specified.'),
+    body('text').trim().isLength({ min: 1 }).withMessage('Text must be specified.')
+
+    // Sanitize fields.
+    sanitizeBody('title').escape(),
+    sanitizeBody('text').escape()
+
+    Post.findByIdAndUpdate(req.params.postid, req.body, function (err, post) {
+        if (err) return next(err);
+        res.json(post);
+        });
+}
+
+//Handle comment update on PUT
+exports.comment_update = (req, res, next) => {
+
+    // Validate fields.
+    body('author').trim().isLength({ min: 1 }).withMessage('Author must be specified.')
+        .isAlphanumeric().withMessage('Author has non-alphanumeric characters.'),
+    body('text').trim().isLength({ min: 1 }).withMessage('Comment must be specified.')
+
+    // Sanitize fields.
+    sanitizeBody('author').escape(),
+    sanitizeBody('text').escape()
+
+    Comment.findByIdAndUpdate(req.params.commentid, req.body, function (err, comment) {
+            if (err) return next(err);
+            res.json(comment);
+        });
 }

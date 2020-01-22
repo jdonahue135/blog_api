@@ -25,4 +25,10 @@ router.delete('/:postid', post_controller.post_delete);
 /* handle comment DELETE */
 router.delete('/:postid/comments/:commentid', post_controller.comment_delete);
 
+/* handle blog update on PUT */
+router.put('/:postid', post_controller.post_update);
+
+/* handle comment update on PUT */
+router.put('/:postid/comments/:commentid', post_controller.comment_update);
+
 module.exports = router;

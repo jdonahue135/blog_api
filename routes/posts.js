@@ -7,6 +7,9 @@ var post_controller = require('../controllers/postController');
 /* Get all posts */
 router.get('/', post_controller.posts);
 
+/* handle blog post on POST */
+router.post('/', post_controller.post_post);
+
 /* GET individual post page. */
 router.get('/:postid', post_controller.post_get);
 

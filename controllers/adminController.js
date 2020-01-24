@@ -57,26 +57,3 @@ exports.drafts = (req, res) => {
         res.json(posts);
     });
 }
-
-//Handle blog post submit on POST
-exports.post_post = (req, res, next) => {
-
-    // Validate fields.
-    body('title').trim().isLength({ min: 1 }).withMessage('Title must be specified.'),
-    body('text').trim().isLength({ min: 1 }).withMessage('Text must be specified.')
-
-    // Sanitize fields.
-    sanitizeBody('title').escape(),
-    sanitizeBody('text').escape()
-
-    // Save post
-    const new_post = new Post({
-        title: req.body.title,
-        author: req.body.author,
-        text: req.body.text,
-        published_status: req.body.published_status
-    }).save(err => {
-        if (err) return next(err);
-        res.json({message: 'new post created'});
-    });
-}

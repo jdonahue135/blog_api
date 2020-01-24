@@ -5,12 +5,12 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var dotenv = require('dotenv');
 var cors = require('cors');
+const session = require("express-session");
 
-var indexRouter = require('./routes/index');
-var postsRouter = require('./routes/posts');
-var adminRouter = require('./routes/admin');
+const passport = require('passport');
 
-var app = express();
+// Passport configuration
+require('./config/passport')(passport)
 
 //Configure dotenv
 dotenv.config();
@@ -23,6 +23,12 @@ mongoose.connect(mongoDB, { useNewUrlParser: true });
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error: '));
 
+var app = express();
+
+var indexRouter = require('./routes/index');
+var postsRouter = require('./routes/posts');
+var adminRouter = require('./routes/admin');
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -33,6 +39,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Session must come before passport
+app.use(session({ secret: "guest", resave: false, saveUninitialized: true }));
+
+//Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 app.use('/', indexRouter);
 app.use('/api/posts', postsRouter);

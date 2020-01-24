@@ -16,7 +16,4 @@ router.get('/drafts', admin_controller.drafts);
 /* handle author sign up on POST */
 router.post('/signup', admin_controller.signup);
 
-/* handle blog post on POST */
-router.post('/post', admin_controller.post_post);
-
 module.exports = router;

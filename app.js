@@ -5,12 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var dotenv = require('dotenv');
 var cors = require('cors');
-const session = require("express-session");
 
-const passport = require('passport');
-
-// Passport configuration
-require('./config/passport')(passport)
+const auth = require('./config/auth');
 
 //Configure dotenv
 dotenv.config();
@@ -39,14 +35,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Session must come before passport
-app.use(session({ secret: "guest", resave: false, saveUninitialized: true }));
-
-//Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
-
+app.use(auth.getToken);
 
 app.use('/', indexRouter);
 app.use('/api/posts', postsRouter);

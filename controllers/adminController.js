@@ -8,16 +8,6 @@ const jwt = require('jsonwebtoken');
 const { body } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 
-//Display admin dashboard page on GET
-exports.index = (req, res) => {
-    res.send("Not implemented: admin dashboard");
-}
-
-//Display admin login form on GET
-exports.login_get = (req, res) => {
-    res.send("Not implemented: admin login form");
-}
-
 // Handle login on POST
 exports.login_post = function(req, res, next) {
     Author.findOne({username : req.body.username}, (err, user) => {
@@ -26,7 +16,6 @@ exports.login_post = function(req, res, next) {
             if (err) return next(err);
             else {
                 jwt.sign({user}, 'secretkey', (err, token) => {
-                    console.log(token)
                     if (err) return next(err);
                     res.json({token});
                 });
@@ -94,7 +83,6 @@ exports.post_post = (req, res, next) => {
 
 //Display unposted drafts on GET
 exports.drafts = (req, res, next) => {
-    console.log(req.token)
     //verify token
     jwt.verify(req.token, 'secretkey', (err, authData) => {
         if (err) {
@@ -110,12 +98,10 @@ exports.drafts = (req, res, next) => {
 // Handle post DELETE
 exports.post_delete = (req, res, next) => {
     Comment.find({ 'post': req.params.postid }, function (err, post_comments) {
-        console.log('comments: ' + post_comments);
         if (err) return next(err);
         for (comment in post_comments) {
             Comment.findByIdAndRemove(post_comments[comment]._id, function (err, the_comment) {
                 if (err) return next(err);
-                console.log(the_comment);
             })
         }
     });

@@ -6,17 +6,11 @@ const auth = require('../config/auth')
 // Require controller modules
 var admin_controller = require('../controllers/adminController');
 
-/* GET admin dashboard*/
-router.get('/', auth.verifyToken, admin_controller.index);
-
-/* GET admin login page */
-router.get('/login', admin_controller.login_get);
-
 /* Handle admin login on POST */
 router.post('/login', admin_controller.login_post);
 
 /* handle blog post on POST */
-router.post('/', admin_controller.post_post);
+router.post('/', auth.verifyToken, admin_controller.post_post);
 
 /* GET unposted drafts */
 router.get('/drafts', auth.verifyToken, admin_controller.drafts);
@@ -25,16 +19,16 @@ router.get('/drafts', auth.verifyToken, admin_controller.drafts);
 router.post('/signup', admin_controller.signup);
 
 /* handle blog post DELETE */
-router.delete('/:postid', admin_controller.post_delete);
+router.delete('/:postid', auth.verifyToken, admin_controller.post_delete);
 
 /* handle comment DELETE */
-router.delete('/:postid/comments/:commentid', admin_controller.comment_delete);
+router.delete('/:postid/comments/:commentid', auth.verifyToken, admin_controller.comment_delete);
 
 /* handle blog update on PUT */
-router.put('/:postid', admin_controller.post_update);
+router.put('/:postid', auth.verifyToken, admin_controller.post_update);
 
 /* handle comment update on PUT */
-router.put('/:postid/comments/:commentid', admin_controller.comment_update);
+router.put('/:postid/comments/:commentid', auth.verifyToken, admin_controller.comment_update);
 
 
 module.exports = router;

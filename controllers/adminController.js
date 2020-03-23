@@ -37,6 +37,14 @@ exports.signup = (req, res, next) => {
     sanitizeBody('username').escape(),
     sanitizeBody('password').escape()
 
+    //Validate input
+    if (req.body.username == '') {
+        res.json({message: 'username must be specified'})
+    }
+    if (req.body.password == '') {
+        res.json({message: 'password must be specified'})
+    }
+
     //Verify that username does not already exist
     User.findOne( { username: req.body.username }, (err, user) => {
         if (err) return next(err);
@@ -44,16 +52,17 @@ exports.signup = (req, res, next) => {
             res.json({message: 'username already exists'});
         }
         if (!user) {
+            //Save new user
             bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
                 if (err) return next(err);
                 const new_user = new User({
                     username: req.body.username,
                     password: hashedPassword,
-                }).save(err => {
+                })
+                new_user.save(err => {
                     if (err) return next(err);
                 });
-                res.json({message: 'new admin created'});
-
+                res.json({message: 'new admin created: ' + new_user.username});
             });
         }
     });
@@ -64,22 +73,44 @@ exports.post_post = (req, res, next) => {
 
     // Validate fields.
     body('title').trim().isLength({ min: 1 }).withMessage('Title must be specified.'),
+    body('author').trim().isLength({ min: 1 }).withMessage('Author must be specified.'),
     body('text').trim().isLength({ min: 1 }).withMessage('Text must be specified.')
 
     // Sanitize fields.
     sanitizeBody('title').escape(),
+    sanitizeBody('author').escape(),
     sanitizeBody('text').escape()
+
+    //Validate input
+    if (req.body.title == '') {
+        res.json({message: 'title must be specified'});
+    }
+    if (req.body.author == '') {
+        res.json({message: 'author must be specified'});
+    }
+    if (req.body.text == '') {
+        res.json({message: 'text must be specified'});
+    }
+    if (typeof(req.body.published_status) !== 'boolean') {
+        res.json({message: 'published status must be boolean'});
+    }
 
     // Save post
     const new_post = new Post({
         title: req.body.title,
-        author: req.body.user,
+        author: req.body.author,
         text: req.body.text,
         published_status: req.body.published_status
-    }).save(err => {
+    })
+    new_post.save(err => {
         if (err) return next(err);
-        res.json({message: 'new post created'});
     });
+    if (new_post.published_status == false) {
+        res.json({message: 'new draft saved: ' + new_post.title});
+    }
+    else {
+        res.json({message: 'new post published: ' + new_post.title});
+    }
 }
 
 //Display unposted drafts on GET

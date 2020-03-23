@@ -21,7 +21,6 @@ const verifyToken = (req, res, next) => {
         if (err) {
             res.sendStatus(403);
         }
-        console.log(authData);
     })
     next();
 }

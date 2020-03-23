@@ -15,7 +15,7 @@ exports.login_post = function(req, res, next) {
         bcrypt.compare(req.body.password, user.password, (err, result) => {
             if (err) return next(err);
             else {
-                jwt.sign({user}, 'secretkey', (err, token) => {
+                jwt.sign({user}, process.env.JWT_KEY, (err, token) => {
                     if (err) return next(err);
                     res.json({token});
                 });
@@ -51,8 +51,9 @@ exports.signup = (req, res, next) => {
                     password: hashedPassword,
                 }).save(err => {
                     if (err) return next(err);
-                    res.json({message: 'new author created: ' + new_author.username});
                 });
+                res.json({message: 'new author created'});
+
             });
         }
     });
@@ -83,12 +84,6 @@ exports.post_post = (req, res, next) => {
 
 //Display unposted drafts on GET
 exports.drafts = (req, res, next) => {
-    //verify token
-    jwt.verify(req.token, 'secretkey', (err, authData) => {
-        if (err) {
-            res.sendStatus(403);
-        }
-    })
     Post.find({'published_status': false}, function (err, posts) {
         if (err) return next(err);
         res.json(posts);

@@ -1,5 +1,5 @@
 var Post = require('../models/post');
-var Author = require('../models/author');
+var User = require('../models/user');
 const Comment = require('../models/comment');
 
 const bcrypt = require('bcrypt');
@@ -10,7 +10,7 @@ const { sanitizeBody } = require('express-validator/filter');
 
 // Handle login on POST
 exports.login_post = function(req, res, next) {
-    Author.findOne({username : req.body.username}, (err, user) => {
+    User.findOne({username : req.body.username}, (err, user) => {
         if (err) return next(err);
         bcrypt.compare(req.body.password, user.password, (err, result) => {
             if (err) return next(err);
@@ -38,21 +38,21 @@ exports.signup = (req, res, next) => {
     sanitizeBody('password').escape()
 
     //Verify that username does not already exist
-    Author.findOne( { username: req.body.username }, (err, author) => {
+    User.findOne( { username: req.body.username }, (err, user) => {
         if (err) return next(err);
-        if (author) {
+        if (user) {
             res.json({message: 'username already exists'});
         }
-        if (!author) {
+        if (!user) {
             bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
                 if (err) return next(err);
-                const new_author = new Author({
+                const new_user = new User({
                     username: req.body.username,
                     password: hashedPassword,
                 }).save(err => {
                     if (err) return next(err);
                 });
-                res.json({message: 'new author created'});
+                res.json({message: 'new admin created'});
 
             });
         }
@@ -73,7 +73,7 @@ exports.post_post = (req, res, next) => {
     // Save post
     const new_post = new Post({
         title: req.body.title,
-        author: req.body.author,
+        author: req.body.user,
         text: req.body.text,
         published_status: req.body.published_status
     }).save(err => {

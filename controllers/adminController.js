@@ -118,7 +118,7 @@ exports.drafts = (req, res, next) => {
     Post.find({'published_status': false}, function (err, posts) {
         if (err) return next(err);
         res.json(posts);
-    });        
+    });
 }
 
 // Handle post DELETE
@@ -156,6 +156,17 @@ exports.post_update = (req, res, next) => {
     sanitizeBody('title').escape(),
     sanitizeBody('text').escape()
 
+    //Validate input
+    if (req.body.title == '') {
+        res.json({message: 'title must be specified'});
+    }
+    if (req.body.text == '') {
+        res.json({message: 'text must be specified'});
+    }
+    if (typeof(req.body.published_status) !== 'boolean') {
+        res.json({message: 'published status must be boolean'});
+    }
+
     Post.findByIdAndUpdate(req.params.postid, req.body, function (err, post) {
         if (err) return next(err);
         res.json(post);
@@ -165,14 +176,16 @@ exports.post_update = (req, res, next) => {
 //Handle comment update on PUT
 exports.comment_update = (req, res, next) => {
 
-    // Validate fields.
-    body('author').trim().isLength({ min: 1 }).withMessage('Author must be specified.')
-        .isAlphanumeric().withMessage('Author has non-alphanumeric characters.'),
+    // Validate
     body('text').trim().isLength({ min: 1 }).withMessage('Comment must be specified.')
 
-    // Sanitize fields.
-    sanitizeBody('author').escape(),
+    // Sanitize
     sanitizeBody('text').escape()
+
+    // Validate on Surver side
+    if (req.body.text == '') {
+        res.json({message: 'text must be specified'});
+    }
 
     Comment.findByIdAndUpdate(req.params.commentid, req.body, function (err, comment) {
             if (err) return next(err);

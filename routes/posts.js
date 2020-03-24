@@ -15,14 +15,14 @@ router.post('/', auth.verifyToken, post_controller.post);
 /* GET individual post page. */
 router.get('/:postid', post_controller.post_get);
 
-/* POST comment to individual post page. */
-router.post('/:postid', post_controller.comment);
-
 /* handle blog update on PUT */
 router.put('/:postid', auth.verifyToken, post_controller.post_update);
 
 /* handle blog post DELETE */
 router.delete('/:postid', auth.verifyToken, post_controller.post_delete);
+
+/* POST comment to individual post page. */
+router.post('/:postid', post_controller.comment);
 
 /* GET comments on individual post. */
 router.get('/:postid/comments', post_controller.comments_get);
